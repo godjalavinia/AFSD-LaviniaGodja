@@ -26,4 +26,8 @@ print(a_doua_parte)
 
 #4
 articol=prima_parte+a_doua_parte
+<<<<<<< HEAD
 print(articol)
+=======
+print(articol)
+>>>>>>> d8d56f9d7ef4f0452dc3377c96eebf799bbc59b0
