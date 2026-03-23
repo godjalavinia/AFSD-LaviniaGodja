@@ -1,0 +1,136 @@
+import json
+def incarca_date():
+    f = open("competitori.json", "r")
+    lista = json.load(f)
+    f.close()
+    return lista
+
+def afiseaza_competitori(lista):
+    if len(lista) == 0:
+        print("Lista este goala.")
+        return
+    print("")
+    for c in lista:
+        print(c["nume"], c["punctaj"], c["timp"])
+
+def adauga_competitor(lista):
+    nume = input("Nume: ")
+    if nume == "":
+        print("Nume invalid!")
+        return
+    for c in lista:
+        if c["nume"].lower() == nume.lower():
+            print("Competitorul exista deja!")
+            return
+    punctaj = int(input("Punctaj: "))
+    timp = int(input("Timp: "))
+    lista.append({
+        "nume": nume,
+        "punctaj": punctaj,
+        "timp": timp
+    })
+    print("Competitor adaugat cu succes.")
+
+def actualizeaza_competitor(lista):
+    nume = input("Nume competitor: ")
+    for c in lista:
+        if c["nume"].lower() == nume.lower():
+            print("Ce vrei sa modifici?")
+            print("1. Punctaj")
+            print("2. Timp")
+            print("3. Ambele")
+            opt = input("Optiune: ")
+            if opt == "1":
+                c["punctaj"] = int(input("Punctaj nou: "))
+                print("Punctaj actualizat.")
+            elif opt == "2":
+                c["timp"] = int(input("Timp nou: "))
+                print("Timp actualizat.")
+            elif opt == "3":
+                c["punctaj"] = int(input("Punctaj nou: "))
+                c["timp"] = int(input("Timp nou: "))
+                print("Date actualizate.")
+            else:
+                print("Optiune invalida.")
+            return
+    print("Competitorul nu exista.")
+
+def mai_bun(a, b):
+    if a["punctaj"] > b["punctaj"]:
+        return True
+    if a["punctaj"] < b["punctaj"]:
+        return False
+
+    if a["timp"] < b["timp"]:
+        return True
+    if a["timp"] > b["timp"]:
+        return False
+
+    return a["nume"] < b["nume"]
+
+def quicksort(lista):
+    if len(lista) <= 1:
+        return lista
+    pivot = lista[0]
+    stanga = []
+    dreapta = []
+    for i in range(1, len(lista)):
+        if mai_bun(lista[i], pivot):
+            stanga.append(lista[i])
+        else:
+            dreapta.append(lista[i])
+    return quicksort(stanga) + [pivot] + quicksort(dreapta)
+
+def clasament(lista):
+    lista = quicksort(lista)
+    loc = 1
+    for i in range(len(lista)):
+        if i > 0:
+            prev = lista[i - 1]
+            curent = lista[i]
+            if not (curent["punctaj"] == prev["punctaj"] and curent["timp"] == prev["timp"]):
+                loc = i + 1
+        c = lista[i]
+        print(loc, c["nume"], c["punctaj"], c["timp"])
+
+def statistici(lista):
+    if len(lista) == 0:
+        print("Nu exista date.")
+        return
+    punctaje = [c["punctaj"] for c in lista]
+    timpuri = [c["timp"] for c in lista]
+    print("Numar:", len(lista))
+    print("Max:", max(punctaje))
+    print("Min:", min(punctaje))
+    print("Media:", sum(punctaje) / len(punctaje))
+    print("Cel mai bun timp:", min(timpuri))
+
+if __name__ == "__main__":
+    lista = incarca_date()
+    while True:
+        print("")
+        print("1. Afisare competitori")
+        print("2. Adaugare competitor")
+        print("3. Actualizare competitor")
+        print("4. Sortare competitori")
+        print("5. Clasament")
+        print("6. Statistici")
+        print("0. Iesire")
+        opt = input("Optiune: ")
+        if opt == "1":
+            afiseaza_competitori(lista)
+        elif opt == "2":
+            adauga_competitor(lista)
+        elif opt == "3":
+            actualizeaza_competitor(lista)
+        elif opt == "4":
+            lista = quicksort(lista)
+            print("Sortat.")
+        elif opt == "5":
+            clasament(lista)
+        elif opt == "6":
+            statistici(lista)
+        elif opt == "0":
+            break
+        else:
+            print("Optiune invalida.")
